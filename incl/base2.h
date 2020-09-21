@@ -26,7 +26,8 @@ class base2 {
 
     base2(const char str) : bit_rep(convert_to_binary(str)) {}
     base2(const std::string& n_str) : 
-                            bit_rep(convert_to_binary(n_str)) {}
+                        bit_rep(convert_to_binary(n_str)) {}
+
 
     void add_to(const base2& addend)
     {

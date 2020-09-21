@@ -144,7 +144,7 @@ base2 base2::divide(const base2& divisor)
 
     if (is_less_than(divisor) == true) {
         *this = zero;
-        return zero;
+        return zero; //Should return divisor!
     }
 
     base2 remainder = *this;
