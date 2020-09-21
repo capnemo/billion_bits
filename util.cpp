@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include "util.h"
+#include "base2.h" //To be removed after base2 is replaced with 
+                   //bool_vec
 
 template <typename T>
 void util::add(std::vector<T>& n1, const std::vector<T>& n2, int base)
