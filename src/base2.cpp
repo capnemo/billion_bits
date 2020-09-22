@@ -111,7 +111,7 @@ base2 base2::get_exponent_bin(int exp)
 
 void base2::multiply_with(const base2& multiplicand)
 {
-    base2 res(multiplicand.get_size() + bit_rep.size());
+    base2 res = get_zero_value(multiplicand.get_size() + bit_rep.size());
     bool_vec m_bits;
     multiplicand.set_bits(m_bits);
     

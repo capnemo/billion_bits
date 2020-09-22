@@ -20,14 +20,19 @@ class base2 {
 
     base2() {}
     base2(bool_vec& bits) : bit_rep(bits) {} 
-    base2(int size) : bit_rep(size, 0) {}
     base2(unsigned long number) : 
-                        bit_rep(convert_to_binary(number)){}
+                        bit_rep(convert_to_binary(number)){} 
 
     base2(const char str) : bit_rep(convert_to_binary(str)) {}
     base2(const std::string& n_str) : 
                         bit_rep(convert_to_binary(n_str)) {}
 
+    
+    base2 get_zero_value(int sz)
+    {
+        bool_vec z(sz, 0);
+        return base2(z);
+    }
 
     void add_to(const base2& addend)
     {
