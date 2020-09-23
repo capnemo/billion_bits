@@ -21,8 +21,8 @@
 bool_vec n10 = {1,0,1,0};
 static base2 num_10(n10);
 
-bool_vec z = {0};
-static base2 zero(z);
+bool_vec n0 = {0};
+static base2 zero(n0);
 
 bool_vec one = {1};
 static base2 unity(one);
@@ -139,16 +139,16 @@ base2 base2::get_modulo(const base2& divisor)
 
 base2 base2::divide(const base2& divisor)
 {
-
     is_negative = (is_negative == divisor.less_than_zero()) ? false:true;
+
     if (is_equal_to(divisor) == true) {
-        *this = unity;
+        bit_rep = one;
         return zero;
     }
 
     if (is_less_than(divisor) == true) {
-        *this = zero;
-        return zero; //Should return divisor!
+        bit_rep = n0;
+        return divisor; 
     }
 
     base2 remainder = *this;
