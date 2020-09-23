@@ -41,12 +41,15 @@ class base2 {
         return base2(z);
     }
 
+/*
     void add_to(const base2& addend)
     {
         bool_vec a_bits = addend.get_bits();
         util::add(bit_rep, a_bits, 2);
     }
+*/
    
+    void add_to(const base2& addend);
     void subtract_from(const base2& subtrahend);
     void multiply_with(const base2& multiplicand);
 
@@ -66,7 +69,7 @@ class base2 {
     }
 
     base2 get_modulo(const base2& divisor);
-    bool is_greater_than(const base2& num);
+    bool is_greater_than(const base2& num) const;
     
     void print_bits() const; 
     void print_base10() const;
@@ -134,6 +137,7 @@ class base2 {
     void trim_left();
     void trim_right(int places);
     void add_exponent(int ex);
+    bool is_zero();
 
     //bool is_negative = false;
     std::vector<bool> bit_rep;

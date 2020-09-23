@@ -27,7 +27,7 @@ static base2 zero(n0);
 bool_vec one = {1};
 static base2 unity(one);
 
-//Cannot handle 2^63
+//Cannot handle 2^63 BUG!!
 bool_vec base2::convert_to_binary(unsigned long num)
 {
     bool_vec bits;
@@ -51,8 +51,8 @@ bool_vec base2::convert_to_binary(unsigned long num)
     return bits;
 }
     
-
-bool base2::is_greater_than(const base2& num)
+//Cannot handle signs. BUG!!
+bool base2::is_greater_than(const base2& num) const
 {
     if (get_size() != num.get_size()) 
         return (get_size() > num.get_size()) ? true:false;
@@ -64,6 +64,28 @@ bool base2::is_greater_than(const base2& num)
 
     return (at(i - 1) > num.at(j - 1)) ? true:false;
 }
+
+void base2::add_to(const base2& addend)
+{
+    if (is_negative != addend.less_than_zero()) {
+        bool sign = is_negative;
+        if (addend.is_greater_than(*this) == true) 
+            sign = addend.less_than_zero();
+        
+        is_negative = false;
+        bool_vec b = addend.get_bits();
+        base2 t(b);
+        subtract_from(t);
+        is_negative = sign;
+        if (is_zero() == true)
+            is_negative = false;
+        return;
+    }
+
+    bool_vec a_bits = addend.get_bits();
+    util::add(bit_rep, a_bits, 2);
+}
+
 
 void base2::subtract_from(const base2& subtrahend)
 {
@@ -78,6 +100,17 @@ void base2::subtract_from(const base2& subtrahend)
         bit_rep[0] = 0;
     
     trim_left();
+    
+    if (is_zero() == true)
+        is_negative = false;
+}
+
+bool base2::is_zero()
+{
+    if ((get_size() == 1) && (bit_rep[0] == 0))
+        return true;
+
+    return false;
 }
 
 void base2::trim_left()

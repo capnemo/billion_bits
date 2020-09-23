@@ -2,3 +2,7 @@
 1
 .*swp
 *.a
+add_test
+disp_test
+op_test
+
