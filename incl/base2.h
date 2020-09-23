@@ -19,15 +19,22 @@ class base2 {
     static bool validate(const std::string& num);
 
     base2() {}
-    base2(bool_vec& bits) : bit_rep(bits) {} 
-    base2(unsigned long number) : 
-                        bit_rep(convert_to_binary(number)){} 
+    base2(bool_vec& bits, bool sign = false) : 
+                           bit_rep(bits),
+                           is_negative(sign) {} 
 
-    base2(const char str) : bit_rep(convert_to_binary(str)) {}
-    base2(const std::string& n_str) : 
-                        bit_rep(convert_to_binary(n_str)) {}
+    base2(unsigned long number, bool sign = false) : 
+                           bit_rep(convert_to_binary(number)),
+                           is_negative(sign) {} 
 
-    
+    base2(const char c_str, bool sign = false) : 
+                           bit_rep(convert_to_binary(c_str)),
+                           is_negative(sign) {} 
+
+    base2(const std::string& n_str, bool sign = false) :
+                            bit_rep(convert_to_binary(n_str)),
+                           is_negative(sign) {} 
+
     base2 get_zero_value(int sz)
     {
         bool_vec z(sz, 0);
@@ -46,6 +53,16 @@ class base2 {
     inline void divide_by(const base2& divisor)
     {
         divide(divisor);
+    }
+
+    inline bool less_than_zero() const
+    {
+        return is_negative;
+    }
+
+    inline void set_negative()
+    {
+        is_negative = true;
     }
 
     base2 get_modulo(const base2& divisor);
@@ -108,7 +125,7 @@ class base2 {
 
     inline bool is_less_than(const base2& arg)
     {
-        return !is_greater_than(arg); //Wrong!
+        return !is_greater_than(arg);
     }
 
     void increment();
@@ -118,6 +135,8 @@ class base2 {
     void trim_right(int places);
     void add_exponent(int ex);
 
+    //bool is_negative = false;
     std::vector<bool> bit_rep;
+    bool is_negative;
 };
 #endif

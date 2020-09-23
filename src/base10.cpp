@@ -6,6 +6,9 @@
 
 void base10::print()
 {
+    if (is_negative == true)
+        std::cout << "-";
+
     for (auto m:digits)
         std::cout << m;
 

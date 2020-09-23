@@ -5,6 +5,7 @@
 #include "base10.h"
 
 //TODO Signedness. All over from add_to print.
+//TODO Sign.. display
 //TODO base2 should also print in base 10. Done.
 //TODO Trim leading zeros. After subtract_from. Done
 //TODO Should be able to take an exponent of 2 and generate the binary number. 
@@ -123,6 +124,8 @@ void base2::multiply_with(const base2& multiplicand)
         }
     }
 
+    is_negative = (is_negative == multiplicand.less_than_zero()) ? false:true;
+
     res.set_bits(bit_rep);
     trim_left();
 }
@@ -137,6 +140,7 @@ base2 base2::get_modulo(const base2& divisor)
 base2 base2::divide(const base2& divisor)
 {
 
+    is_negative = (is_negative == divisor.less_than_zero()) ? false:true;
     if (is_equal_to(divisor) == true) {
         *this = unity;
         return zero;
@@ -216,6 +220,7 @@ bool base2::validate(const std::string& num)
 
     return true;
 }
+
 base2 base2::convert_to_bits(unsigned char digit)
 {
     unsigned mask = 128;
@@ -232,6 +237,8 @@ base2 base2::convert_to_bits(unsigned char digit)
 
 void base2::print_bits() const
 {
+    if (is_negative == true)
+        std::cout << "-";
     for (auto m:bit_rep)
         std::cout << m;
 
@@ -240,6 +247,6 @@ void base2::print_bits() const
 
 void base2::print_base10() const
 {
-    base10 b10(bit_rep);
+    base10 b10(bit_rep, is_negative);
     b10.print();
 }
