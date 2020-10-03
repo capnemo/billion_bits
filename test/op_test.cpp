@@ -19,11 +19,11 @@ int main(int argc, char *argv[])
     bool res_valid = true;
 
     if (op == "-a") {
-        a1.add_to(a2);
+        a1.sum(a2);
     } else if (op == "-m") {
         a1.multiply_with(a2);
     } else if (op == "-s") {
-        a1.subtract_from(a2);
+        a1.difference(a2);
     } else if (op == "-d") {
         a1.divide_by(a2);
     } else if (op == "-r") {

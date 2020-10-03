@@ -49,8 +49,10 @@ class base2 {
     }
 */
    
-    void add_to(const base2& addend);
-    void subtract_from(const base2& subtrahend);
+    void add_to(const base2& addend); //Removed??
+    void sum(const base2& arg);
+    void difference(const base2& arg);
+    void subtract_from(const base2& subtrahend); //Should be private??
     void multiply_with(const base2& multiplicand);
 
     inline void divide_by(const base2& divisor)

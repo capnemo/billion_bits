@@ -65,23 +65,30 @@ bool base2::is_greater_than(const base2& num) const
     return (at(i - 1) > num.at(j - 1)) ? true:false;
 }
 
-void base2::add_to(const base2& addend)
+void base2::sum(const base2& arg)
 {
-    if (is_negative != addend.less_than_zero()) {
-        bool sign = is_negative;
-        if (addend.is_greater_than(*this) == true) 
-            sign = addend.less_than_zero();
-        
-        is_negative = false;
-        bool_vec b = addend.get_bits();
-        base2 t(b);
-        subtract_from(t);
-        is_negative = sign;
-        if (is_zero() == true)
-            is_negative = false;
+    if (less_than_zero() == arg.less_than_zero())  {
+        util::add(bit_rep, arg.get_bits(), 2);
         return;
     }
+        
+    subtract_from(arg);
+    if (arg.is_greater_than(*this) == true)
+        is_negative = arg.less_than_zero();
+    
+    if (is_zero() == true)
+        is_negative = false;
+}
 
+void base2::difference(const base2& arg)
+{
+    bool_vec arg_bits = arg.get_bits();
+    base2 m_arg = base2(arg_bits, !arg.less_than_zero());
+    sum(m_arg);
+}
+
+void base2::add_to(const base2& addend)
+{
     bool_vec a_bits = addend.get_bits();
     util::add(bit_rep, a_bits, 2);
 }
@@ -100,9 +107,6 @@ void base2::subtract_from(const base2& subtrahend)
         bit_rep[0] = 0;
     
     trim_left();
-    
-    if (is_zero() == true)
-        is_negative = false;
 }
 
 bool base2::is_zero()
@@ -119,8 +123,10 @@ void base2::trim_left()
     while (at(i++) == 0);
     
     bit_rep.erase(bit_rep.begin(), bit_rep.begin() + i - 1);
-    if (bit_rep.size() == 0)
+    if (bit_rep.size() == 0) {
         bit_rep.push_back(0);
+        is_negative = false;
+    }
 }
 
 void base2::trim_right(int places)
@@ -157,7 +163,8 @@ void base2::multiply_with(const base2& multiplicand)
         }
     }
 
-    is_negative = (is_negative == multiplicand.less_than_zero()) ? false:true;
+    is_negative = 
+            (is_negative == multiplicand.less_than_zero()) ? false:true;
 
     res.set_bits(bit_rep);
     trim_left();
