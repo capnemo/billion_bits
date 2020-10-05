@@ -13,7 +13,6 @@ int main(int argc, char *argv[])
     if (base2::validate(arg) == true) {
         base2 bin_num(arg);
         bin_num.print_bits();
-        bin_num.print_base10();
     }   
 }
 

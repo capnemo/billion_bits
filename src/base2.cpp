@@ -151,7 +151,8 @@ base2 base2::get_exponent_bin(int exp)
 
 void base2::multiply_with(const base2& multiplicand)
 {
-    base2 res = get_zero_value(multiplicand.get_size() + bit_rep.size());
+    base2 res = 
+            get_zero_value(multiplicand.get_size() + bit_rep.size());
     bool_vec m_bits;
     multiplicand.set_bits(m_bits);
     
@@ -164,7 +165,7 @@ void base2::multiply_with(const base2& multiplicand)
     }
 
     is_negative = 
-            (is_negative == multiplicand.less_than_zero()) ? false:true;
+        (is_negative == multiplicand.less_than_zero()) ? false:true;
 
     res.set_bits(bit_rep);
     trim_left();
@@ -179,7 +180,8 @@ base2 base2::get_modulo(const base2& divisor)
 
 base2 base2::divide(const base2& divisor)
 {
-    is_negative = (is_negative == divisor.less_than_zero()) ? false:true;
+    is_negative = 
+        (is_negative == divisor.less_than_zero()) ? false:true;
 
     if (is_equal_to(divisor) == true) {
         bit_rep = one;
