@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
     if (base2::validate(arg) == true) {
         base2 bin_num(arg, is_negative);
         bin_num.print_bits();
-    }   
+    } else 
+        std::cout << "Error -- argument is not a number" << std::endl;
 }
 

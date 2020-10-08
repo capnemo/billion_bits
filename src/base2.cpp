@@ -109,7 +109,26 @@ void base2::subtract_from(const base2& subtrahend)
     trim_left();
 }
 
-bool base2::is_zero()
+void base2::set_unity()
+{
+    bit_rep = {1};
+}
+
+bool base2::is_unity() const
+{
+    if ((get_size() == 1) && (bit_rep[0] == 1))
+        return true;
+
+    return false;
+}
+
+void base2::set_zero()
+{
+    is_negative = false;
+    bit_rep = {0};
+}
+
+bool base2::is_zero() const
 {
     if ((get_size() == 1) && (bit_rep[0] == 0))
         return true;
@@ -117,12 +136,13 @@ bool base2::is_zero()
     return false;
 }
 
+//Should take in bool_vec and be in ns util.
 void base2::trim_left()
 {
     int i = 0;
     while (at(i++) == 0);
-    
     bit_rep.erase(bit_rep.begin(), bit_rep.begin() + i - 1);
+
     if (bit_rep.size() == 0) {
         bit_rep.push_back(0);
         is_negative = false;
@@ -149,26 +169,77 @@ base2 base2::get_exponent_bin(int exp)
     return exp_bin;
 }
 
-void base2::multiply_with(const base2& multiplicand)
+int base2::get_num_ones() const
 {
-    base2 res = 
-            get_zero_value(multiplicand.get_size() + bit_rep.size());
-    bool_vec m_bits;
-    multiplicand.set_bits(m_bits);
-    
-    for (int i = m_bits.size() - 1; i >= 0; i--) {
-        if (m_bits[i] == 1) {
-            base2 t(bit_rep);
-            t.shift_left(m_bits.size() - 1 - i);
-            res.add_to(t);
-        }
-    }
+    int n_r = 0;
+    for (auto m:bit_rep)
+        if (m == 1)
+            n_r++;
 
+    return n_r;
+}
+
+void base2::multiply_with(const base2& multiplicand)
+{   
     is_negative = 
         (is_negative == multiplicand.less_than_zero()) ? false:true;
 
-    res.set_bits(bit_rep);
+    if (is_zero() == true) 
+        return;
+
+    if (multiplicand.is_zero() == true) {
+        set_zero();
+        return;
+    }
+
+    if (is_unity() == true) {
+        bit_rep = multiplicand.get_bits();
+        return;
+    }
+
+    if (multiplicand.is_unity() == true) 
+        return;
+
+    bool_vec l_bits, g_bits;
+    if (get_num_ones() < multiplicand.get_num_ones()) {
+        l_bits = bit_rep;
+        g_bits = multiplicand.get_bits();
+    } else {
+        l_bits = multiplicand.get_bits();
+        g_bits = bit_rep;
+    }
+    
+    bool_vec res(l_bits.size() + g_bits.size(), 0);
+    int i = l_bits.size() - 1;
+    int curr_pos = 0;
+    int prev_pos = 0;
+    for (;i >= 0; i--) {
+        if (l_bits[i] == 1) {
+            g_bits.insert(g_bits.end(), curr_pos - prev_pos, 0);
+            util::add(res, g_bits, 2);
+            prev_pos = curr_pos;
+        }
+        curr_pos++;
+    }
+
+    bit_rep = res;
     trim_left();
+}
+
+void base2::multiply_with_ten()
+{   
+    if (is_unity() == true) {
+        bit_rep = n10;
+        return;
+    }
+
+    if (is_zero() == true)
+        return;
+
+    bit_rep.push_back(0);
+    bool_vec addend = bit_rep;
+    addend.insert(addend.end(), 2, 0);
+    util::add(bit_rep, addend, 2);
 }
 
 base2 base2::get_modulo(const base2& divisor)
@@ -247,7 +318,7 @@ bool_vec base2::convert_to_binary(const std::string& num_str)
         base2 bin_digit = convert_to_bits(num_str[i] - '0');
         bin_digit.multiply_with(ten_exp);
         dst.add_to(bin_digit);
-        ten_exp.multiply_with(n10);
+        ten_exp.multiply_with_ten();
         i--;
     }
 
@@ -265,7 +336,7 @@ bool base2::validate(const std::string& num)
 
 base2 base2::convert_to_bits(unsigned char digit)
 {
-    unsigned mask = 128;
+    unsigned mask = 8;
     bool_vec num;
     
     while (mask > 0) {
@@ -274,7 +345,10 @@ base2 base2::convert_to_bits(unsigned char digit)
         mask = mask >> 1;
     }
 
-    return base2(num);   
+    base2 b2_dig(num);
+    b2_dig.trim_left();
+
+    return b2_dig;
 }
 
 void base2::print_bits() const

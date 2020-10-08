@@ -48,11 +48,12 @@ class base2 {
         util::add(bit_rep, a_bits, 2);
     }
 */
-   
+
     void add_to(const base2& addend); //Removed??
     void sum(const base2& arg);
     void difference(const base2& arg);
     void multiply_with(const base2& multiplicand);
+    void multiply_with_ten();
 
     inline void divide_by(const base2& divisor)
     {
@@ -139,10 +140,13 @@ class base2 {
     void trim_left();
     void trim_right(int places);
     void add_exponent(int ex);
-    bool is_zero();
+    void set_zero();
+    bool is_zero() const;
+    void set_unity();
+    bool is_unity() const;
+    int get_num_ones() const;
 
-    //bool is_negative = false;
     std::vector<bool> bit_rep;
-    bool is_negative;
+    bool is_negative = false;
 };
 #endif
