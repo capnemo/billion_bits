@@ -7,10 +7,6 @@ run_mul_test() {
     f_ret=$(./op_test -m $1 $2 | head -1)
 }
 
-run_bc() {
-    bc_val=$(echo $1 | bc | tr -d "\n" | tr -d "\\" 2>/dev/null)
-}
-
 run_mul_test 32 32
 match $f_ret 1024 "mul1 test"
 
@@ -45,4 +41,4 @@ run_mul_test -1234 1
 match $f_ret -1234 "mul9 test"
 
 run_mul_test -1234 -1
-match $f_ret 1234 "mul11 test"
+match $f_ret 1234 "mul10 test"

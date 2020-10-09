@@ -18,3 +18,9 @@ check_fail() {
     fi
 
 }
+
+run_bc() {
+    bc_val=$(echo $1 | bc | tr -d "\n" | tr -d "\\" 2>/dev/null)
+}
+
+
