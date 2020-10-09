@@ -43,12 +43,7 @@ do
 done
 check_fail $f "add3"
 
-#addition of big numbers takes 11 seconds! Conversion from b10 to b2 is 
-#the problem. std::bitset implementation should have clues.
-
 big_num=$(echo "2^1000" | bc | tr -d "\n" | tr -d "\\" 2>/dev/null)
 big_num_sum=$(echo "2^1001" | bc | tr -d "\n" | tr -d "\\" 2>/dev/null)
 b2_sum=$(./op_test -a $big_num $big_num | head -1)
 match $big_num_sum $b2_sum "add4 test"
-
-

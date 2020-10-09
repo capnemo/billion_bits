@@ -17,6 +17,7 @@
 //TODO Tests for modulo. Done
 //TODO Cannot handle input strings >= 2^63
 //TODO Move all the static functions to the util namespace.
+//TODO Corner and unity cases in addition, and subtraction.
 
 bool_vec n10 = {1,0,1,0};
 static base2 num_10(n10);
