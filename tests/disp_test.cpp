@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     }
 
     std::string arg(inp);
-    if (base2::validate(arg) == true) {
+    if (util::is_valid_num(arg) == true) {
         base2 bin_num(arg, is_negative);
         bin_num.print_bits();
     } else 

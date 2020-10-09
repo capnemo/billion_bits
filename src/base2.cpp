@@ -136,7 +136,6 @@ bool base2::is_zero() const
     return false;
 }
 
-//Should take in bool_vec and be in ns util.
 void base2::trim_left()
 {
     int i = 0;
@@ -323,15 +322,6 @@ bool_vec base2::convert_to_binary(const std::string& num_str)
     }
 
     return dst.get_bits();
-}
-
-bool base2::validate(const std::string& num)
-{
-    for (auto m:num) 
-        if ((m < '0') || (m > '9'))
-            return false;
-
-    return true;
 }
 
 base2 base2::convert_to_bits(unsigned char digit)
