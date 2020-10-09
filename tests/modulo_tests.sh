@@ -16,3 +16,5 @@ match $f_ret 0 "mod2 test"
 run_mod_test 12345678900000000000000000 123456789
 match $f_ret 0 "mod3 test"
 
+run_mod_test 12769 31
+match $f_ret 28 "mod4 test"
