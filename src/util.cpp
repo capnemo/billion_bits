@@ -1,10 +1,8 @@
 #include <iostream>
 #include <vector>
 #include "util.h"
-#include "base2.h" //To be removed after base2 is replaced with 
-                   //bool_vec
 
-template <typename T> //Should be moved to the .cpp file.
+template <typename T> 
 void util::add(std::vector<T>& n1, const std::vector<T>& n2, int base)
 {
     if (n1.size() < n2.size())
@@ -102,6 +100,23 @@ bool util::is_valid_num(const std::string& num)
     return true;
 }
 
+bool_vec util::convert_to_bits(unsigned char digit)
+{
+    unsigned mask = 8;
+    bool_vec num;
+    
+    while (mask > 0) {
+        bool b = (digit & mask) ? 1:0;
+        num.push_back(b);
+        mask = mask >> 1;
+    }
+
+    int i = 0;
+    while(num[i++] == 0);
+    num.erase(num.begin(), num.begin() + i - 1);
+
+    return num; 
+}
 
 template void util::add<bool>(bool_vec&, const bool_vec&, int);
 template void util::add<int>(vec_int&, const vec_int&, int);

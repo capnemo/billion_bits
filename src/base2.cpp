@@ -68,6 +68,14 @@ bool base2::is_greater_than(const base2& num) const
 
 void base2::sum(const base2& arg)
 {
+    if (arg.is_zero() == true)
+        return;
+
+    if (is_zero() ==  true) {
+        *this = arg;
+        return;
+    }
+
     if (less_than_zero() == arg.less_than_zero())  {
         util::add(bit_rep, arg.get_bits(), 2);
         return;
@@ -84,7 +92,7 @@ void base2::sum(const base2& arg)
 void base2::difference(const base2& arg)
 {
     bool_vec arg_bits = arg.get_bits();
-    base2 m_arg = base2(arg_bits, !arg.less_than_zero());
+    base2 m_arg(arg_bits, !arg.less_than_zero());
     sum(m_arg);
 }
 
@@ -254,6 +262,9 @@ base2 base2::divide(const base2& divisor)
     is_negative = 
         (is_negative == divisor.less_than_zero()) ? false:true;
 
+    if (divisor.is_unity() == true)
+        return zero;
+
     if (is_equal_to(divisor) == true) {
         bit_rep = one;
         return zero;
@@ -315,7 +326,8 @@ bool_vec base2::convert_to_binary(const std::string& num_str)
     base2 ten_exp = one;
 
     while (i >= 0) {
-        base2 bin_digit = convert_to_bits(num_str[i] - '0');
+        bool_vec bits = util::convert_to_bits(num_str[i] - '0');
+        base2 bin_digit(bits);
         bin_digit.multiply_with(ten_exp);
         dst.add_to(bin_digit);
         ten_exp.multiply_with_ten();
@@ -323,23 +335,6 @@ bool_vec base2::convert_to_binary(const std::string& num_str)
     }
 
     return dst.get_bits();
-}
-
-base2 base2::convert_to_bits(unsigned char digit)
-{
-    unsigned mask = 8;
-    bool_vec num;
-    
-    while (mask > 0) {
-        bool b = (digit & mask) ? 1:0;
-        num.push_back(b);
-        mask = mask >> 1;
-    }
-
-    base2 b2_dig(num);
-    b2_dig.trim_left();
-
-    return b2_dig;
 }
 
 void base2::print_bits() const

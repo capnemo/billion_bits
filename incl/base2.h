@@ -15,9 +15,6 @@ class base2 {
     static bool_vec convert_to_binary(const char* num_str);
     static bool_vec convert_to_binary(const std::string& num_str);
 
-    static base2 convert_to_bits(unsigned char digit);
-    static bool validate(const std::string& num);
-
     base2() {}
     base2(bool_vec& bits, bool sign = false) : 
                            bit_rep(bits),
@@ -41,15 +38,7 @@ class base2 {
         return base2(z);
     }
 
-/*
-    void add_to(const base2& addend)
-    {
-        bool_vec a_bits = addend.get_bits();
-        util::add(bit_rep, a_bits, 2);
-    }
-*/
-
-    void add_to(const base2& addend); //Removed??
+    void add_to(const base2& addend); 
     void sum(const base2& arg);
     void difference(const base2& arg);
     void multiply_with(const base2& multiplicand);
