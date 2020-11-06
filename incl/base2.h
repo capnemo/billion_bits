@@ -42,6 +42,7 @@ class base2 {
     void sum(const base2& arg);
     void difference(const base2& arg);
     void multiply_with(const base2& multiplicand);
+    base2 get_modulo(const base2& divisor);
     void multiply_with_ten();
 
     inline void divide_by(const base2& divisor)
@@ -59,11 +60,33 @@ class base2 {
         is_negative = true;
     }
 
-    base2 get_modulo(const base2& divisor);
     bool is_greater_than(const base2& num) const;
     
     void print_bits() const; 
     void print_base10() const;
+
+    inline bool_vec get_bits() const
+    {
+        return bit_rep;
+    }
+
+    inline int get_size() const
+    {
+        return bit_rep.size();
+    }
+
+    inline void flip() 
+    {
+        bit_rep.flip();
+    }
+
+    void shift_right(int places)
+    {
+        if (places <= 0) 
+            return;
+
+        bit_rep.insert(bit_rep.begin(), places, 0);
+    }
 
     private:
     inline void reset_bits(const bool_vec& new_bits)
@@ -79,32 +102,9 @@ class base2 {
         bit_rep.insert(bit_rep.end(), places, 0);
     }
 
-    void shift_right(int places)
-    {
-        if (places <= 0) 
-            return;
-
-        bit_rep.insert(bit_rep.begin(), places, 0);
-    }
-
     inline void set_bits(bool_vec& d_bits) const
     {
         d_bits = bit_rep;
-    }
-
-    inline int get_size() const
-    {
-        return bit_rep.size();
-    }
-
-    inline bool_vec get_bits() const
-    {
-        return bit_rep;
-    }
-
-    inline void flip() 
-    {
-        bit_rep.flip();
     }
 
     inline bool at(int i) const
