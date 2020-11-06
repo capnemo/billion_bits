@@ -6,11 +6,12 @@
 #ifndef BASE2_H
 #define BASE2_H
 
+/* 
+ * Implements base 2 arithmetic.
+ */
 class base2 {
 
     public:
-    //should return bool_vec and be called from the constructor.
-
     static bool_vec convert_to_binary(unsigned long num);
     static bool_vec convert_to_binary(const char* num_str);
     static bool_vec convert_to_binary(const std::string& num_str);
@@ -122,7 +123,7 @@ class base2 {
         return !is_greater_than(arg);
     }
 
-    void subtract_from(const base2& subtrahend); //Should be private??
+    void subtract_from(const base2& subtrahend); 
     void increment();
     base2 divide(const base2& divisor);
     base2 get_exponent_bin(int exp);

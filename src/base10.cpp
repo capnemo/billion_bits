@@ -4,6 +4,9 @@
 #include "base10.h"
 #include "base_types.h"
 
+/*
+ *  Print digits in base 10 format.
+ */
 void base10::print()
 {
     if (is_negative == true)

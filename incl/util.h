@@ -5,6 +5,9 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+/*
+ * Utility functions for base2 and base10 classes.
+ */ 
 namespace util 
 {
     template <typename T> 

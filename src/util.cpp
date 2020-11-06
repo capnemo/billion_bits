@@ -2,6 +2,11 @@
 #include <vector>
 #include "util.h"
 
+/*
+ * Template function to add using different bases. Used for base 2 and
+ * base 10.
+ * computes n1 += n2
+ */
 template <typename T> 
 void util::add(std::vector<T>& n1, const std::vector<T>& n2, int base)
 {
@@ -26,7 +31,9 @@ void util::add(std::vector<T>& n1, const std::vector<T>& n2, int base)
         n1.insert(n1.begin(), 1, carry);
 }
 
-
+/*
+ * converts num_str to base 10.
+ */
 vec_int util::convert_to_base10(const char* num_str)
 {
     vec_int b10;
@@ -36,6 +43,9 @@ vec_int util::convert_to_base10(const char* num_str)
     return b10;
 }
 
+/*
+ * converts num to base 10
+ */
 vec_int util::convert_to_base10(unsigned long num)
 {
     int loc = num;
@@ -49,7 +59,10 @@ vec_int util::convert_to_base10(unsigned long num)
     return b10;
 }
 
-vec_int util::convert_to_base10(const std::vector<bool>& bin_num)
+/*
+ * converts binary to base 10
+ */
+vec_int util::convert_to_base10(const bool_vec& bin_num)
 {
     vec_int res;
     int sz = bin_num.size();
@@ -69,6 +82,9 @@ vec_int util::convert_to_base10(const std::vector<bool>& bin_num)
     return res;
 }
 
+/*
+ * converts binary to base 10.
+ */
 void util::power_of_2(uint32_t exponent, vec_int& pow)
 {
     pow = {1};
@@ -91,6 +107,9 @@ void util::power_of_2(uint32_t exponent, vec_int& pow)
     }
 }
 
+/*
+ * Returns if num is a valid base 10 number.
+ */
 bool util::is_valid_num(const std::string& num)
 {
     for (auto m:num) 
@@ -100,6 +119,9 @@ bool util::is_valid_num(const std::string& num)
     return true;
 }
 
+/*
+ * Returns the base 2 form of the base 10 number in digit
+ */
 bool_vec util::convert_to_bits(unsigned char digit)
 {
     unsigned mask = 8;

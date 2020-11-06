@@ -1,3 +1,7 @@
+/*
+ *  Class to print in base 10 format.
+ */
+
 #include <iostream>
 #include <vector>
 #include "util.h"

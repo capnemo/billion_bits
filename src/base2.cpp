@@ -28,7 +28,11 @@ static base2 zero(n0);
 bool_vec one = {1};
 static base2 unity(one);
 
-//Cannot handle 2^63 BUG!!
+/*
+ * Static function converts @num to bool_vec.
+ * Cannot handle numbers > 2^63.
+ * For numbers > 2^63, use the function with the string argument.
+ */
 bool_vec base2::convert_to_binary(unsigned long num)
 {
     bool_vec bits;
@@ -51,8 +55,11 @@ bool_vec base2::convert_to_binary(unsigned long num)
 
     return bits;
 }
-    
-//Cannot handle signs. BUG!!
+ 
+/*
+ * Returns true if *this > num.
+ * Does not handle signs. Not required at this point.
+ */   
 bool base2::is_greater_than(const base2& num) const
 {
     if (get_size() != num.get_size()) 
@@ -66,6 +73,10 @@ bool base2::is_greater_than(const base2& num) const
     return (at(i - 1) > num.at(j - 1)) ? true:false;
 }
 
+/*
+ * Sums *this and arg. Computes *this = *this + arg. 
+ * sign aware.
+ */
 void base2::sum(const base2& arg)
 {
     if (arg.is_zero() == true)
@@ -89,6 +100,11 @@ void base2::sum(const base2& arg)
         is_negative = false;
 }
 
+/*
+ * Find the difference between *this and arg.
+ * Computes *this = *this - arg.
+ * sign aware.
+ */
 void base2::difference(const base2& arg)
 {
     bool_vec arg_bits = arg.get_bits();
@@ -96,13 +112,20 @@ void base2::difference(const base2& arg)
     sum(m_arg);
 }
 
+/*
+ * Adds *this and addend. Computes *this += addend;
+ * NOT sign aware.
+ */
 void base2::add_to(const base2& addend)
 {
     bool_vec a_bits = addend.get_bits();
     util::add(bit_rep, a_bits, 2);
 }
 
-
+/*
+ * Subtracts addend from *this. Computes *this -= subtrahend;
+ * NOT sign aware.
+ */
 void base2::subtract_from(const base2& subtrahend)
 {
     base2 t = subtrahend;
@@ -118,11 +141,17 @@ void base2::subtract_from(const base2& subtrahend)
     trim_left();
 }
 
+/*
+ * Sets *this to one.
+ */
 void base2::set_unity()
 {
     bit_rep = {1};
 }
 
+/*
+ * Returns if *this equals 1.
+ */
 bool base2::is_unity() const
 {
     if ((get_size() == 1) && (bit_rep[0] == 1))
@@ -131,12 +160,18 @@ bool base2::is_unity() const
     return false;
 }
 
+/*
+ * Sets *this to zero.
+ */
 void base2::set_zero()
 {
     is_negative = false;
     bit_rep = {0};
 }
 
+/*
+ * Returns if *this equals 0.
+ */
 bool base2::is_zero() const
 {
     if ((get_size() == 1) && (bit_rep[0] == 0))
@@ -145,6 +180,9 @@ bool base2::is_zero() const
     return false;
 }
 
+/*
+ * Removes leading zeros.
+ */
 void base2::trim_left()
 {
     int i = 0;
@@ -157,11 +195,17 @@ void base2::trim_left()
     }
 }
 
+/*
+ * Removes trailing zeros.
+ */
 void base2::trim_right(int places)
 {
     bit_rep.erase(bit_rep.end() - places, bit_rep.end());
 }
 
+/*
+ * Increments *this by 1.
+ */
 void base2::increment()
 {
     bool_vec b(1,1);
@@ -169,6 +213,9 @@ void base2::increment()
     add_to(t);
 }
 
+/*
+ * Returns bool_vec corresponding to 2^exp
+ */
 base2 base2::get_exponent_bin(int exp)
 {
     bool_vec exp_bin(exp + 1, 0);
@@ -177,6 +224,9 @@ base2 base2::get_exponent_bin(int exp)
     return exp_bin;
 }
 
+/*
+ * Returns the number of ones in bit_rep.
+ */
 int base2::get_num_ones() const
 {
     int n_r = 0;
@@ -187,6 +237,10 @@ int base2::get_num_ones() const
     return n_r;
 }
 
+/*
+ * Computes *this *= multiplicand.
+ * Sign aware
+ */
 void base2::multiply_with(const base2& multiplicand)
 {   
     is_negative = 
@@ -234,6 +288,9 @@ void base2::multiply_with(const base2& multiplicand)
     trim_left();
 }
 
+/*
+ * Computes *this *= 10. Faster than multiply_with(10);
+ */
 void base2::multiply_with_ten()
 {   
     if (is_unity() == true) {
@@ -250,6 +307,9 @@ void base2::multiply_with_ten()
     util::add(bit_rep, addend, 2);
 }
 
+/*
+ * Returns *this%divisor
+ */
 base2 base2::get_modulo(const base2& divisor)
 {
     base2 dividend(bit_rep);
@@ -257,6 +317,10 @@ base2 base2::get_modulo(const base2& divisor)
     return dividend.divide(divisor);
 }
 
+/*
+ * Computes *this /= divisor. 
+ * Sign aware
+ */
 base2 base2::divide(const base2& divisor)
 {
     is_negative = 
@@ -301,6 +365,9 @@ base2 base2::divide(const base2& divisor)
     return remainder;
 }
 
+/*
+ * Computes *this += 2^ex
+ */
 void base2::add_exponent(int ex)
 {
     int b_ex = get_size() - ex - 1;
@@ -310,6 +377,9 @@ void base2::add_exponent(int ex)
         bit_rep[b_ex] = 1;
 }
 
+/*
+ * Static function to convert num_str to binary(bool_vec).
+ */
 bool_vec base2::convert_to_binary(const char* num_str)
 {
     unsigned long num = std::strtoull(num_str, nullptr, 10);
@@ -318,6 +388,9 @@ bool_vec base2::convert_to_binary(const char* num_str)
     return num_bits;
 }
 
+/*
+ * Static function to convert num_str to binary(bool_vec).
+ */
 bool_vec base2::convert_to_binary(const std::string& num_str)
 {
     base2 dst = zero;
@@ -337,6 +410,9 @@ bool_vec base2::convert_to_binary(const std::string& num_str)
     return dst.get_bits();
 }
 
+/*
+ * Prints *this in binary.
+ */
 void base2::print_bits() const
 {
     if (is_negative == true)
@@ -347,6 +423,9 @@ void base2::print_bits() const
     std::cout << std::endl;
 }
 
+/*
+ * Prints *this in base 10.
+ */
 void base2::print_base10() const
 {
     base10 b10(bit_rep, is_negative);
