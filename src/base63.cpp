@@ -3,6 +3,8 @@
 #include "base63.h"
 
 extern "C" void mul_dq(unsigned long* a1, unsigned long* a2);
+static const ulong msb_on_mask = 0x8000000000000000;
+static const ulong msb_off_mask = 0x7fffffffffffffff;
 
 /*
  * Converts num_str to base 63 number.
@@ -23,7 +25,7 @@ base63 base63::convert_to_b63(const std::string& num_str)
 }
 
 /*
- * Converts a series of exponents of 2 in exponents to a base 63 number.
+ * Converts a series of exponents of 2 to a base 63 number.
  */
 base63 base63::convert_to_base63(const vec_int& exponents)
 {
@@ -72,10 +74,67 @@ base63 base63::convert_to_b63(const base2& b2_num)
     return base63(b63_digits);
 }
 
+void base63::subtract_from(const base63& arg)
+{
+    b63_vec arg_bits = arg.get_bits();
+    if (arg.is_greater_than(dig_vec)) {
+        b63_vec tmp = dig_vec;
+        dig_vec = arg_bits;
+        arg_bits = tmp;
+        is_negative = true;
+    }
+    b63_vec* greater = &dig_vec;
+    b63_vec* lesser = &arg_bits;
+    
+    int g_sz = greater->size();
+    int l_sz = lesser->size();
+    int i = g_sz - 1;
+    int j = l_sz - 1;
+    while ((i >= 0) && (j >= 0)) 
+        (*greater)[i--] -= (*lesser)[j--];
+
+    int carry = 0;
+    for (int i = g_sz - 1; i > 0; i--) {
+        if (carry == 1) {
+            (*greater)[i]--;
+            carry = 0;
+        }
+
+        if ((*greater)[i] & msb_on_mask) {
+            (*greater)[i] &= msb_off_mask; 
+            carry = 1;
+        }
+    }
+
+    ulong& msb = (*greater)[0];
+    if (carry == 1) 
+        msb--;
+
+    if (msb & msb_on_mask) {
+        msb &= msb_off_mask;
+        msb = ~msb;
+        msb++;
+    }
+}
+
+//Returns true IFF dig_vec > arg_bits
+bool base63::is_greater_than(b63_vec& arg_bits) const
+{
+    if (dig_vec.size() != arg_bits.size()) 
+        return (dig_vec.size() > arg_bits.size());
+
+    for (int i = 0; i < dig_vec.size(); i++) 
+        if (dig_vec[i] != arg_bits[i])
+            return (dig_vec[i] > arg_bits[i]);
+    
+    return false;
+}
+
 /*
  * Adds addend to *this. 
  */
-/* should be vectorized */
+
+/* confirm vectorization */
 void base63::add_to(const base63& addend)
 {
     int local_sz = get_size();
@@ -87,17 +146,14 @@ void base63::add_to(const base63& addend)
     while ((i >= 0) && (j >= 0)) 
         dig_vec[i--] += addend_bits[j--];
 
-    if (local_sz < addend_sz) {
-        int diff = addend_sz - local_sz;
-        b63_vec::iterator addend_begin = addend_bits.begin();
-        dig_vec.insert(dig_vec.begin(), addend_begin, 
-                        addend_begin + diff);
-    }
+    if (local_sz < addend_sz) 
+        splice(addend_bits, addend_sz - local_sz);
 
     int carry = 0;
     for (int i = dig_vec.size() - 1; i >= 0; i--) {
         if (carry != 0)
             dig_vec[i]++;
+
         if (dig_vec[i] & msb_on_mask) {
             carry = 1;
             dig_vec[i] = msb_off_mask & dig_vec[i];
@@ -109,6 +165,17 @@ void base63::add_to(const base63& addend)
         dig_vec[0] = msb_off_mask & dig_vec[0];
         dig_vec.insert(dig_vec.begin(), 1);
     }
+}
+
+/*
+ * Splices the first length members of source to the beginning of 
+ * dig_vec
+ */
+void base63::splice(const b63_vec& source, int length)
+{
+    b63_vec::const_iterator source_begin = source.begin();
+    dig_vec.insert(dig_vec.begin(), source_begin, 
+                   source_begin + length);
 }
 
 /*
@@ -144,6 +211,26 @@ void base63::multiply_with(const base63& multiplicand)
     trim_leading_zeros();
 }
 
+void base63::divide_by(const base63& arg)
+{
+    base2 a1;
+    base2 a2;
+    
+    convert_to_base2(a1);
+    arg.convert_to_base2(a2);
+    
+    a1.divide_by(a2);
+    *this = convert_to_b63(a1);
+}
+
+/*
+ * Flips the sign
+ */
+void base63::flip_sign()
+{
+    is_negative = !is_negative;
+}
+
 /*
  * Removes all leading zeros from dig_vec.
  */
@@ -158,11 +245,33 @@ void base63::trim_leading_zeros()
         dig_vec.push_back(0);
 }
 
+void base63::convert_to_base2(base2& b2) const
+{
+    bool_vec bits;
+    for (auto m:dig_vec) {
+        std::bitset<63> digit(m);
+        std::string dig_str = digit.to_string();
+        for (auto c:dig_str)
+            bits.push_back(c - '0');
+    }
+    
+    int i = 0;
+    while (bits[i] == 0)
+        i++;
+    bits.erase(bits.begin(), bits.begin() + i);
+    base2 b2_num(bits, is_negative);
+    //b2_num.print_bits();
+    b2 = b2_num;
+}
+
 /*
  * Print in base 10.
  */
 void base63::print_base10()
 {
+    if (is_negative == true)
+        std::cout << "-";
+
     bool_vec b2;
     for (auto m:dig_vec) {
         std::string str = std::bitset<63>(m).to_string();
@@ -177,6 +286,9 @@ void base63::print_base10()
  */
 void base63::print_bits(bool sep)
 {
+    if (is_negative == true)
+        std::cout << "-";
+
     std::string msb = std::bitset<63>(dig_vec[0]).to_string();
     if (sep == false) {
         int i = 0;

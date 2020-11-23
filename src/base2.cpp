@@ -92,9 +92,13 @@ void base2::sum(const base2& arg)
         return;
     }
         
-    subtract_from(arg);
-    if (arg.is_greater_than(*this) == true)
+    if (arg.is_greater_than(*this) == true) {
         is_negative = arg.less_than_zero();
+        base2 t_arg = arg;
+        t_arg.subtract_from(*this);
+        *this = t_arg;
+    } else 
+        subtract_from(arg);
     
     if (is_zero() == true)
         is_negative = false;

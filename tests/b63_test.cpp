@@ -6,6 +6,8 @@ void display_base2(const char *b10_num);
 void display_vector(std::vector<int> ex_vec);
 void add_and_print(char *a1, char* a2);
 void multiply_and_print(char *a1, char* a2);
+void subtract_and_print(char *a1, char* a2);
+void divide_and_print(char *a1, char* a2);
 
 int main(int argc, char *argv[])
 {
@@ -46,6 +48,20 @@ int main(int argc, char *argv[])
             }
             multiply_and_print(argv[2], argv[3]);
             break;
+        case 's':
+            if (argc != 4)  {
+                arg_count = false;
+                break;
+            }
+            subtract_and_print(argv[2], argv[3]);
+            break;
+        case 'd':
+            if (argc != 4)  {
+                arg_count = false;
+                break;
+            }
+            divide_and_print(argv[2], argv[3]);
+            break;
         default:
             std::cout << "error" << std::endl;
     }
@@ -84,5 +100,23 @@ void multiply_and_print(char *a1, char* a2)
     base63 n2 = base63::convert_to_b63(std::string(a2));
 
     n1.multiply_with(n2);
+    n1.print_base10();
+}
+
+void subtract_and_print(char *a1, char* a2)
+{
+    base63 n1 = base63::convert_to_b63(std::string(a1));
+    base63 n2 = base63::convert_to_b63(std::string(a2));
+
+    n1.subtract_from(n2);
+    n1.print_base10();
+}
+
+void divide_and_print(char *a1, char* a2)
+{
+    base63 n1 = base63::convert_to_b63(std::string(a1));
+    base63 n2 = base63::convert_to_b63(std::string(a2));
+
+    n1.divide_by(n2);
     n1.print_base10();
 }

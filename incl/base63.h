@@ -18,26 +18,30 @@ class base63 {
     static base63 convert_to_b63(const base2& b2_num);
     static base63 convert_to_base63(const vec_int& exponents);
 
-
     base63(b63_vec bits, bool sign = false):dig_vec(bits),
                                             is_negative(sign) {}
 
     void add_to(const base63& addend);
     void multiply_with(const base63& multiplicand);
-    void print_base10(); 
+    void subtract_from(const base63& arg);
+    void divide_by(const base63& arg);
 
+    void print_base10(); 
     void print_bits(bool sep = false);
+
     int get_size() const { return dig_vec.size(); }
     b63_vec get_bits() const  { return dig_vec; }
 
     private:
     void trim_leading_zeros();
+    void splice(const b63_vec& target, int length);
+    void flip_sign();
+    bool is_greater_than(b63_vec& arg) const;
+    void convert_to_base2(base2& b2) const;
 
     private:
     b63_vec dig_vec;
     bool is_negative;
-    const ulong msb_on_mask = 0x8000000000000000;
-    const ulong msb_off_mask = 0x7fffffffffffffff;
 };
 
 #endif /* BASE63_H */
