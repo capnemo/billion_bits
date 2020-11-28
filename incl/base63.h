@@ -25,19 +25,25 @@ class base63 {
     void multiply_with(const base63& multiplicand);
     void subtract_from(const base63& arg);
     void divide_by(const base63& arg);
+    base63 get_modulo(const base63& arg);
+    void difference(const base63& arg);
+    void sum(const base63& arg);
 
     void print_base10(); 
     void print_bits(bool sep = false);
 
     int get_size() const { return dig_vec.size(); }
     b63_vec get_bits() const  { return dig_vec; }
+    bool is_less_than_zero() const;
+    void flip_sign();
 
     private:
     void trim_leading_zeros();
     void splice(const b63_vec& target, int length);
-    void flip_sign();
     bool is_greater_than(b63_vec& arg) const;
     void convert_to_base2(base2& b2) const;
+    void resolve_sign(bool arg_sign);
+    void check_for_zero();
 
     private:
     b63_vec dig_vec;

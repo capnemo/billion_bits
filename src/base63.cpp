@@ -71,53 +71,10 @@ base63 base63::convert_to_b63(const base2& b2_num)
         b63_digits.push_back(std::bitset<63>(num_str).to_ullong());
     }
     
-    return base63(b63_digits);
+    return base63(b63_digits, b2_num.less_than_zero());
 }
 
-void base63::subtract_from(const base63& arg)
-{
-    b63_vec arg_bits = arg.get_bits();
-    if (arg.is_greater_than(dig_vec)) {
-        b63_vec tmp = dig_vec;
-        dig_vec = arg_bits;
-        arg_bits = tmp;
-        is_negative = true;
-    }
-    b63_vec* greater = &dig_vec;
-    b63_vec* lesser = &arg_bits;
-    
-    int g_sz = greater->size();
-    int l_sz = lesser->size();
-    int i = g_sz - 1;
-    int j = l_sz - 1;
-    while ((i >= 0) && (j >= 0)) 
-        (*greater)[i--] -= (*lesser)[j--];
-
-    int carry = 0;
-    for (int i = g_sz - 1; i > 0; i--) {
-        if (carry == 1) {
-            (*greater)[i]--;
-            carry = 0;
-        }
-
-        if ((*greater)[i] & msb_on_mask) {
-            (*greater)[i] &= msb_off_mask; 
-            carry = 1;
-        }
-    }
-
-    ulong& msb = (*greater)[0];
-    if (carry == 1) 
-        msb--;
-
-    if (msb & msb_on_mask) {
-        msb &= msb_off_mask;
-        msb = ~msb;
-        msb++;
-    }
-}
-
-//Returns true IFF dig_vec > arg_bits
+//Returns true IFF dig_vec > arg_bits. Sign is not considered.
 bool base63::is_greater_than(b63_vec& arg_bits) const
 {
     if (dig_vec.size() != arg_bits.size()) 
@@ -167,6 +124,71 @@ void base63::add_to(const base63& addend)
     }
 }
 
+
+
+void base63::sum(const base63& arg)
+{
+    if (arg.is_less_than_zero() == is_less_than_zero())
+        add_to(arg);
+    else
+        subtract_from(arg);
+}
+
+void base63::difference(const base63& arg)
+{
+    if (arg.is_less_than_zero() == is_less_than_zero())
+        subtract_from(arg);
+    else
+        add_to(arg);
+}
+
+//Case of a - b where abs(a) is greater than abs(b) is not optimal 
+//because it involves a copy.
+void base63::subtract_from(const base63& arg)
+{
+    bool real_arg_sign = !arg.is_less_than_zero();
+    b63_vec arg_bits = arg.get_bits();
+    if (arg.is_greater_than(dig_vec)) {
+        b63_vec tmp = dig_vec;
+        dig_vec = arg_bits;
+        arg_bits = tmp;
+        is_negative = real_arg_sign;
+    }
+    b63_vec* greater = &dig_vec;
+    b63_vec* lesser = &arg_bits;
+    
+    int g_sz = greater->size();
+    int l_sz = lesser->size();
+    int i = g_sz - 1;
+    int j = l_sz - 1;
+    while ((i >= 0) && (j >= 0)) 
+        (*greater)[i--] -= (*lesser)[j--];
+
+    int carry = 0;
+    for (int i = g_sz - 1; i > 0; i--) {
+        if (carry == 1) {
+            (*greater)[i]--;
+            carry = 0;
+        }
+
+        if ((*greater)[i] & msb_on_mask) {
+            (*greater)[i] &= msb_off_mask; 
+            carry = 1;
+        }
+    }
+
+    ulong& msb = (*greater)[0];
+    if (carry == 1) 
+        msb--;
+
+    if (msb & msb_on_mask) {
+        msb &= msb_off_mask;
+        msb = ~msb;
+        msb++;
+    }
+    
+    trim_leading_zeros();
+}
 /*
  * Splices the first length members of source to the beginning of 
  * dig_vec
@@ -183,6 +205,8 @@ void base63::splice(const b63_vec& source, int length)
  */
 void base63::multiply_with(const base63& multiplicand)
 {
+    resolve_sign(multiplicand.is_less_than_zero());
+
     b63_vec m_bits = multiplicand.get_bits();
     int l_sz = dig_vec.size();
     int m_sz = m_bits.size();
@@ -211,11 +235,24 @@ void base63::multiply_with(const base63& multiplicand)
     trim_leading_zeros();
 }
 
+base63 base63::get_modulo(const base63& arg)
+{
+    if (arg.is_greater_than(dig_vec))
+        return *this;
+
+    base2 a1;
+    base2 a2;
+    convert_to_base2(a1);
+    arg.convert_to_base2(a2);
+
+    base2 rem = a1.get_modulo(a2);
+    return convert_to_b63(rem);
+}
+
 void base63::divide_by(const base63& arg)
 {
     base2 a1;
     base2 a2;
-    
     convert_to_base2(a1);
     arg.convert_to_base2(a2);
     
@@ -231,6 +268,16 @@ void base63::flip_sign()
     is_negative = !is_negative;
 }
 
+bool base63::is_less_than_zero() const
+{
+    return is_negative;
+}
+
+void base63::resolve_sign(bool arg_sign)
+{
+    is_negative = (is_negative != arg_sign) ? true:false;
+}
+
 /*
  * Removes all leading zeros from dig_vec.
  */
@@ -241,8 +288,10 @@ void base63::trim_leading_zeros()
         i++;
     dig_vec.erase(dig_vec.begin(), dig_vec.begin() + i);
 
-    if (dig_vec.size() == 0)
+    if (dig_vec.size() == 0) {
         dig_vec.push_back(0);
+        is_negative = false;
+    }
 }
 
 void base63::convert_to_base2(base2& b2) const

@@ -74,7 +74,7 @@ bool base2::is_greater_than(const base2& num) const
 }
 
 /*
- * Sums *this and arg. Computes *this = *this + arg. 
+ * Difference of *this and arg. Computes *this = *this + arg. 
  * sign aware.
  */
 void base2::sum(const base2& arg)
@@ -316,6 +316,9 @@ void base2::multiply_with_ten()
  */
 base2 base2::get_modulo(const base2& divisor)
 {
+    if (divisor.is_greater_than(*this)) 
+        return *this;
+
     base2 dividend(bit_rep);
 
     return dividend.divide(divisor);
@@ -340,7 +343,7 @@ base2 base2::divide(const base2& divisor)
 
     if (is_less_than(divisor) == true) {
         bit_rep = n0;
-        return divisor; 
+        return divisor; //PROBLEM!!
     }
 
     base2 remainder = *this;
