@@ -90,7 +90,6 @@ bool base63::is_greater_than(b63_vec& arg_bits) const
 /*
  * Adds addend to *this. 
  */
-
 /* confirm vectorization */
 void base63::add_to(const base63& addend)
 {
@@ -110,7 +109,6 @@ void base63::add_to(const base63& addend)
     for (int i = dig_vec.size() - 1; i >= 0; i--) {
         if (carry != 0)
             dig_vec[i]++;
-
         if (dig_vec[i] & msb_on_mask) {
             carry = 1;
             dig_vec[i] = msb_off_mask & dig_vec[i];
@@ -123,8 +121,6 @@ void base63::add_to(const base63& addend)
         dig_vec.insert(dig_vec.begin(), 1);
     }
 }
-
-
 
 void base63::sum(const base63& arg)
 {
@@ -206,7 +202,6 @@ void base63::splice(const b63_vec& source, int length)
 void base63::multiply_with(const base63& multiplicand)
 {
     resolve_sign(multiplicand.is_less_than_zero());
-
     b63_vec m_bits = multiplicand.get_bits();
     int l_sz = dig_vec.size();
     int m_sz = m_bits.size();

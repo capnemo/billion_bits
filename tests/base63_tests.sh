@@ -301,5 +301,3 @@ divide_sign_test $a $neg_b "divide_test_3"
 divide_sign_test $neg_a $neg_b "divide_test_4"
 echo "$tot sign tests passed"
 echo "$f sign tests failed"
-
-
