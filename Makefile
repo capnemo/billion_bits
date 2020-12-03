@@ -1,8 +1,6 @@
 INCL=incl/base10.h incl/base2.h incl/base63.h incl/util.h
 SRC=src/base10.cpp src/base2.cpp src/base63.cpp src/util.cpp
 OBJS=bin/base10.o bin/base2.o bin/base63.o bin/util.o bin/mul63.o
-TEST_BINS_X=tests/op_test tests/add_test tests/disp_test tests/b63_test tests/conv_drv
-#TEST_BINS=tests/b63_test tests/conv_drv
 TEST_BINS=reg_tests/operator_drv reg_tests/conv_drv
 CC=g++ -ggdb
 #CC=clang++ -ggdb
@@ -28,4 +26,4 @@ reg_tests/%:reg_tests/%.cpp bin/b2.a
 	$(CC) -Iincl/ $^ -o $@
 
 clean:
-	rm -rf bin $(TEST_BINS) $(TEST_BINS_X)
+	rm -rf bin $(TEST_BINS)

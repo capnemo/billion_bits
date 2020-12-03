@@ -5,4 +5,5 @@
 add_test
 disp_test
 op_test
-
+reg_tests/conv_drv
+reg_tests/operator_drv

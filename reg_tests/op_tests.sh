@@ -47,7 +47,6 @@ do
 done
 bc_op="${op_array[$op]}"
 
-
 local_fail=0
 echo "sign tests"
 a=16383
@@ -63,6 +62,15 @@ run_bc "3^123 + 5^45 + 7^6"
 a=$bc_val
 run_test_and_compare $a 1
 run_test_and_compare 1 $a
+run_test_and_compare 1  1
+
+
+if [[ "$op" != "-d" ]] && [[ "$op" != "-r" ]]; then
+    echo "zero tests"
+    run_test_and_compare $a 0
+    run_test_and_compare 0 $a
+    run_test_and_compare 0  0
+fi
 
 echo "shift tests"
 local_fail=0
