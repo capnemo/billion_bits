@@ -135,6 +135,7 @@ class base2 {
     void set_unity();
     bool is_unity() const;
     int get_num_ones() const;
+    void set_sign(bool sign);
 
     std::vector<bool> bit_rep;
     bool is_negative = false;

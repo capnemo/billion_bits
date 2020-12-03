@@ -319,8 +319,7 @@ base2 base2::get_modulo(const base2& divisor)
     if (divisor.is_greater_than(*this)) 
         return *this;
 
-    base2 dividend(bit_rep);
-
+    base2 dividend(bit_rep, is_negative);
     return dividend.divide(divisor);
 }
 
@@ -330,6 +329,7 @@ base2 base2::get_modulo(const base2& divisor)
  */
 base2 base2::divide(const base2& divisor)
 {
+    const bool orig_sign = is_negative;
     is_negative = 
         (is_negative == divisor.less_than_zero()) ? false:true;
 
@@ -369,7 +369,13 @@ base2 base2::divide(const base2& divisor)
     bit_rep = quotient.get_bits();
     trim_left();
 
+    remainder.set_sign(orig_sign);
     return remainder;
+}
+
+void base2::set_sign(bool sign)
+{
+    is_negative = sign;
 }
 
 /*

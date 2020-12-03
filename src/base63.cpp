@@ -45,7 +45,9 @@ base63 base63::convert_to_base63(const vec_int& exponents)
         dig = dig | (mask << (m%63));
     }
 
-    return base63(b63_num);
+    base63 b(b63_num);
+    b.trim_leading_zeros();
+    return b;
 }
 
 /*

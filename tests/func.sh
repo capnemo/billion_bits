@@ -1,11 +1,22 @@
 #!/bin/bash
 
+check_args() {
+
+    if [ $# == 1 ]; then
+        b_arg=$1
+    else
+        b_arg=-b2
+    fi
+    echo "base is $b_arg"
+}
+
 match (){
     
     if [ $1 == $2 ]; then
         echo "$3 has passed"
     else
         echo "$3 has failed"
+        let "mf=$mf+1"
     fi
 }
 
