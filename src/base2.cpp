@@ -4,21 +4,6 @@
 #include "base2.h"
 #include "base10.h"
 
-//TODO Signedness. All over from add_to print.
-//TODO Sign.. display
-//TODO base2 should also print in base 10. Done.
-//TODO Trim leading zeros. After subtract_from. Done
-//TODO Should be able to take an exponent of 2 and generate the binary number. 
-//     Done.
-//TODO divide_by. Done.
-//TODO Remainder and divide should call divide_by Done.
-//TODO All relational operators should use std::vector::relational operator
-//     Doesnt work! Should be investigated, perhaps.
-//TODO Tests for modulo. Done
-//TODO Cannot handle input strings >= 2^63
-//TODO Move all the static functions to the util namespace.
-//TODO Corner and unity cases in addition, and subtraction.
-
 bool_vec n10 = {1,0,1,0};
 static base2 num_10(n10);
 
@@ -32,6 +17,7 @@ static base2 unity(one);
  * Static function converts @num to bool_vec.
  * Cannot handle numbers > 2^63.
  * For numbers > 2^63, use the function with the string argument.
+ * IN @num to be converted to base2.
  */
 bool_vec base2::convert_to_binary(unsigned long num)
 {
@@ -59,6 +45,7 @@ bool_vec base2::convert_to_binary(unsigned long num)
 /*
  * Returns true if *this > num.
  * Does not handle signs. Not required at this point.
+ * IN   @num number to be compared with.
  */   
 bool base2::is_greater_than(const base2& num) const
 {
@@ -76,6 +63,7 @@ bool base2::is_greater_than(const base2& num) const
 /*
  * Difference of *this and arg. Computes *this = *this + arg. 
  * sign aware.
+ * IN   @arg number to be compared with.
  */
 void base2::sum(const base2& arg)
 {
@@ -108,6 +96,7 @@ void base2::sum(const base2& arg)
  * Find the difference between *this and arg.
  * Computes *this = *this - arg.
  * sign aware.
+ * IN   @arg number to be compared with.
  */
 void base2::difference(const base2& arg)
 {
@@ -119,6 +108,7 @@ void base2::difference(const base2& arg)
 /*
  * Adds *this and addend. Computes *this += addend;
  * NOT sign aware.
+ * IN   @addend number to be added
  */
 void base2::add_to(const base2& addend)
 {
@@ -129,6 +119,7 @@ void base2::add_to(const base2& addend)
 /*
  * Subtracts addend from *this. Computes *this -= subtrahend;
  * NOT sign aware.
+ * IN   @subtrahend number to be subtracted
  */
 void base2::subtract_from(const base2& subtrahend)
 {
@@ -143,14 +134,6 @@ void base2::subtract_from(const base2& subtrahend)
         bit_rep[0] = 0;
     
     trim_left();
-}
-
-/*
- * Sets *this to one.
- */
-void base2::set_unity()
-{
-    bit_rep = {1};
 }
 
 /*
@@ -200,7 +183,8 @@ void base2::trim_left()
 }
 
 /*
- * Removes trailing zeros.
+ * Removes trailing digits.
+ * IN @places 
  */
 void base2::trim_right(int places)
 {
@@ -215,17 +199,6 @@ void base2::increment()
     bool_vec b(1,1);
     base2 t(b);
     add_to(t);
-}
-
-/*
- * Returns bool_vec corresponding to 2^exp
- */
-base2 base2::get_exponent_bin(int exp)
-{
-    bool_vec exp_bin(exp + 1, 0);
-    exp_bin[0] = 1;
-
-    return exp_bin;
 }
 
 /*
@@ -244,6 +217,7 @@ int base2::get_num_ones() const
 /*
  * Computes *this *= multiplicand.
  * Sign aware
+ * IN @multiplicand number to be multiplied with.
  */
 void base2::multiply_with(const base2& multiplicand)
 {   
@@ -313,6 +287,7 @@ void base2::multiply_with_ten()
 
 /*
  * Returns *this%divisor
+ * IN @divisor. The denominator
  */
 base2 base2::get_modulo(const base2& divisor)
 {
@@ -324,8 +299,19 @@ base2 base2::get_modulo(const base2& divisor)
 }
 
 /*
+ * Computes *this/divisor
+ * IN @divisor. The denominator
+ */
+void base2::divide_by(const base2& divisor)
+{
+    divide(divisor);
+}
+
+
+/*
  * Computes *this /= divisor. 
  * Sign aware
+ * IN @divisor. The denominator
  */
 base2 base2::divide(const base2& divisor)
 {
@@ -373,6 +359,18 @@ base2 base2::divide(const base2& divisor)
     return remainder;
 }
 
+/*
+ * Returns true if *this is less than zero.
+ */
+bool base2::less_than_zero() const
+{
+    return is_negative;
+}
+
+/*
+ * Set the sign.
+ * IN @sign   the sign to set to.
+ */
 void base2::set_sign(bool sign)
 {
     is_negative = sign;
@@ -380,6 +378,7 @@ void base2::set_sign(bool sign)
 
 /*
  * Computes *this += 2^ex
+ * IN @ex exponent.
  */
 void base2::add_exponent(int ex)
 {
@@ -392,6 +391,7 @@ void base2::add_exponent(int ex)
 
 /*
  * Static function to convert num_str to binary(bool_vec).
+ * IN @num_str  string to convert.
  */
 bool_vec base2::convert_to_binary(const char* num_str)
 {
@@ -403,6 +403,7 @@ bool_vec base2::convert_to_binary(const char* num_str)
 
 /*
  * Static function to convert num_str to binary(bool_vec).
+ * IN @num_str  string to convert.
  */
 bool_vec base2::convert_to_binary(const std::string& num_str)
 {
@@ -443,4 +444,88 @@ void base2::print_base10() const
 {
     base10 b10(bit_rep, is_negative);
     b10.print();
+}
+
+/*
+ * Returns *this as a bool_vec
+ */
+bool_vec base2::get_bits() const
+{
+    return bit_rep;
+}
+
+/*
+ *  Returns the size of the bool_vec
+ */
+int base2::get_size() const
+{
+    return bit_rep.size();
+}
+
+/*
+ * Flips all the bits in the bool_vec
+ */
+void base2::flip()
+{
+    bit_rep.flip();
+}
+
+/*
+ *  Right shift.
+ *  IN @places  number of places to shift.
+ */
+void base2::shift_right(int places)
+{
+    if (places <= 0)
+        return;
+
+    bit_rep.insert(bit_rep.begin(), places, 0);
+}
+
+/*
+ *  Left shift.
+ *  IN @places  number of places to shift.
+ */
+void base2::shift_left(int places)
+{
+    if (places <= 0)
+        return;
+
+    bit_rep.insert(bit_rep.end(), places, 0);
+}
+
+/*
+ * Resets the bits in bit_rep.
+ * IN @d_bits  Source bit rep.
+ */
+void base2::set_bits(bool_vec& d_bits) const
+{
+    d_bits = bit_rep;
+}
+
+/*
+ * Returns the bit at i.
+ * IN @i  position
+ */
+bool base2::at(int i) const
+{
+    return bit_rep[i];
+}
+
+/*
+ * Returns true if *this is equal arg
+ * IN @arg   input arg.
+ */
+bool base2::is_equal_to(const base2& arg)
+{
+    return (get_bits() == arg.get_bits());
+}
+
+/*
+ * Returns true if *this < arg
+   IN @arg   input argument.
+ */
+bool base2::is_less_than(const base2& arg)
+{
+    return !is_greater_than(arg);
 }
