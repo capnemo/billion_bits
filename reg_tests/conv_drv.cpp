@@ -5,10 +5,12 @@
 
 void display_base2(const char* b10_num);
 void display_vector(int exp_count, char** exponents);
+void usage(const char* prog_name);
+
 int main(int argc, char *argv[])
 {
     if ((argc <= 2) || (strlen(argv[1]) != 2) || (argv[1][0] != '-')) {
-        std::cout << "error!" << std::endl;
+        usage(argv[0]);
         return -1;
     }
 
@@ -44,3 +46,10 @@ void display_vector(int exp_count, char** exponents)
     base63 b63 = base63::convert_to_base63(exp_vec);
     b63.print_bits();   
 }
+
+void usage(const char* prog_name)
+{
+    std::cout << "usage:" << prog_name << " -v|-x " << "<num_string>"
+    << std::endl;
+}
+

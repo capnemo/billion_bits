@@ -2,11 +2,15 @@ INCL=incl/base10.h incl/base2.h incl/base63.h incl/util.h
 SRC=src/base10.cpp src/base2.cpp src/base63.cpp src/util.cpp
 OBJS=bin/base10.o bin/base2.o bin/base63.o bin/util.o bin/mul63.o
 TEST_BINS=reg_tests/operator_drv reg_tests/conv_drv
-CC=g++ -ggdb
+CC=clang++ -ggdb
 #CC=clang++ -ggdb
+#CC=g++
 #TODO dependencies have to be added. 
 
 all:src_cmp test
+
+release: CC:=clang++ -Ofast -ggdb
+release: all
 
 bin/b2.a:$(OBJS)
 	ar r bin/b2.a $(OBJS)
