@@ -6,7 +6,7 @@ Subtraction
 Multiplication  
 Division  
 Modulo  
-A base2 object has a range of +-2^9223372036854775744 and a base63 object has a range of +-(2^63)^2305843009213693951
+A base2 object has a range of +-2^9223372036854775744 and a base63 object has a range of +-(2^63)^2305843009213693951 on a 64 bit linux/unix machine.
 ### Building the software
 git clone the software to your machine.  
 In the billion_bits directory, run make.  
