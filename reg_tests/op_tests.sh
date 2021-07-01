@@ -1,16 +1,16 @@
 #!/bin/bash
 
 run_bc_op() {
-    bc_op_val=$(echo "$1 $bc_op $2" | bc | tr -d "\n" | tr -d "\\" 2>/dev/null)
+    echo "$1 $bc_op $2" | bc | tr -d "\n" | tr -d "\\" 2>/dev/null
 }
 
 run_bc() {
-    bc_val=$(echo $1 | bc | tr -d "\n" | tr -d "\\" 2>/dev/null)
+    echo $1 | bc | tr -d "\n" | tr -d "\\" 2>/dev/null
 }
 
 run_test_and_compare() {
     let "total+=1"
-    run_bc_op $1 $2
+    bc_op_val=$(run_bc_op $1 $2)
     t_val=$(./operator_drv $base_arg $op $1 $2)
     if [ $t_val != $bc_op_val ]; then
         let "local_fail+=1"
@@ -58,8 +58,7 @@ run_test_and_compare -$a -$b
 
 echo "unity tests"
 local_fail=0
-run_bc "3^123 + 5^45 + 7^6"
-a=$bc_val
+a=$(run_bc "3^123 + 5^45 + 7^6")
 run_test_and_compare $a 1
 run_test_and_compare 1 $a
 run_test_and_compare 1  1
@@ -74,15 +73,12 @@ fi
 
 echo "shift tests"
 local_fail=0
-run_bc "7^156"
-x=$bc_val
-run_bc "11^23"
-b=$bc_val
+x=$(run_bc "7^156")
+b=$(run_bc "11^23")
 i=100
 while [ $i -le 130 ]
 do
-    run_bc "$x + 3^$i"
-    a=$bc_val
+    a=$(run_bc "$x + 3^$i")
     run_test_and_compare $a $b 
     echo -en "\b|"
     run_test_and_compare $b $a 
@@ -97,10 +93,8 @@ echo -en "\b"
 
 echo "large number tests"
 local_fail=0
-run_bc "2^360 + 3^234 + 5^67"
-a=$bc_val
-run_bc "2^100 + 3^67 + 7^9"
-b=$bc_val
+a=$(run_bc "2^360 + 3^234 + 5^67")
+b=$(run_bc "2^100 + 3^67 + 7^9")
 run_test_and_compare $a $b
 run_test_and_compare $b $a
 
