@@ -17,7 +17,7 @@ endif
 
 all:src_cmp test
 
-release: CC:=clang++ -Ofast -ggdb
+release: CC:=clang++ -std=c++11 -Ofast -ggdb
 release: all
 
 bin/b2.a:$(OBJS)

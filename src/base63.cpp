@@ -217,7 +217,7 @@ void base63::multiply_with(const base63& multiplicand)
                 continue;
             ulong prod[2] = {dig_vec[i], 0};
             ulong arg2 = m_bits[j];
-            mul_dq(prod, &arg2);
+            mul_dq((unsigned long *)prod, (unsigned long *)&arg2);
             b63_vec prod_arr;
             if (prod[0] != 0)  
                 prod_arr.push_back(prod[0]); 
