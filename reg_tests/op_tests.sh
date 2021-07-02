@@ -24,20 +24,6 @@ if [[ "$1" == "-b2" ]] || [[ "$1" == "-b63" ]]; then
     base_arg=$1
 fi
 
-declare -A op_array
-op_array[-a]=+
-op_array[-s]=-
-op_array[-m]=*
-op_array[-d]=/
-op_array[-r]=%
-
-declare -A stub_array
-stub_array[-a]=add
-stub_array[-s]=subtract
-stub_array[-m]=multiply
-stub_array[-d]=divide
-stub_array[-r]=modulo
-
 op=-a
 for i in -a -s -m -d -r
 do
@@ -45,7 +31,30 @@ do
         op=$i
     fi
 done
-bc_op="${op_array[$op]}"
+#bc_op="${op_array[$op]}"
+bc_op=+
+
+if [[ "$op" == "-a" ]]
+then
+    bc_op=+
+    op_name="add"
+elif [[ "$op" == "-s" ]]
+then
+    bc_op=-
+    op_name="subtract"
+elif [[ "$op" == "-m" ]]
+then
+    bc_op=*
+    op_name="multiply"
+elif [[ "$op" == "-d" ]]
+then
+    bc_op=/
+    op_name="divide"
+elif [[ "$op" == "-r" ]]
+then
+    bc_op=%
+    op_name="modulo"
+fi
 
 local_fail=0
 echo "sign tests"
@@ -99,6 +108,6 @@ run_test_and_compare $a $b
 run_test_and_compare $b $a
 
 echo -n "base is $base_arg "
-echo -n "operation is "${stub_array[$op]}" "
+echo -n "operation is $op_name "
 echo -n "tests run:$total "
 echo "tests failed:$local_fail"
