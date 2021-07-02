@@ -126,13 +126,16 @@ bool util::is_valid_num(const std::string& num)
  */
 bool_vec util::convert_to_bits(unsigned char digit)
 {
-    std::bitset<4> bt  = digit;
+    std::bitset<4> bt = digit;
     bool_vec num(4, 0);
     
     for (int i = 0; i < 4; i++) 
         num[3 - i] = bt[i];
-        
-    return num;
+
+    int i = 0;
+    while(num[i++] == 0);
+    num.erase(num.begin(), num.begin() + i - 1);
+    return num; 
 }
 
 template void util::add<bool>(bool_vec&, const bool_vec&, int);
