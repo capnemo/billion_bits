@@ -126,9 +126,6 @@ bool util::is_valid_num(const std::string& num)
  */
 bool_vec util::convert_to_bits(unsigned char digit)
 {
-    if (digit == 0)
-        return bool_vec(1, 0);
-
     std::bitset<4> bt = digit;
     bool_vec num(4, 0);
     
@@ -136,7 +133,7 @@ bool_vec util::convert_to_bits(unsigned char digit)
         num[3 - i] = bt[i];
 
     int i = 0;
-    while(num[i++] == 0);
+    while((num[i++] == 0) && (i <= 3));
     num.erase(num.begin(), num.begin() + i - 1);
     return num; 
 }
