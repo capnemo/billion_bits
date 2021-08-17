@@ -16,3 +16,9 @@ The base 2 api is in the file incl/base2.h and the base 2^63 api is in the file 
 ### Tests
 reg_tests/test_all.sh will run tests on base 2 and base 2^63 for all the operators.  
 The file reg_tests/operator_drv.cpp is instructive in the usage of this library.
+
+### Dependencies
+C++ 11 or greater.
+Linux or Macos
+Clang version 8 or greater.
+Yasm 1.3.0 or greater
