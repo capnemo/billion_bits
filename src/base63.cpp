@@ -256,6 +256,17 @@ void base63::divide_by(const base63& arg)
     a1.divide_by(a2);
     *this = convert_to_b63(a1);
 }
+/*
+ * Raise *this to the power of 'power' 
+ * Need to implement shift_left so this is 
+ * similar to the b2 version
+ */
+void base63::raise_to(uint64_t power)
+{   
+    base63 num = *this;
+    for (int i = 0; i < (power - 1); i++)
+        multiply_with(num);
+}
 
 /*
  * Flips the sign

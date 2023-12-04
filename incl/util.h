@@ -19,7 +19,7 @@ namespace util
     bool_vec convert_to_bits(unsigned char digit);
     void power_of_2(uint32_t exponent, vec_int& pow);
     bool is_valid_num(const std::string& num);
-    
+    uint8_t get_trailing_zeros(uint64_t);
 }
 
 #endif

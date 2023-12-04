@@ -39,6 +39,7 @@ class base2 {
     void multiply_with(const base2& multiplicand);
     base2 get_modulo(const base2& divisor);
     void multiply_with_ten();
+    void raise_to(uint64_t power);
 
     void divide_by(const base2& divisor);
     bool less_than_zero() const;

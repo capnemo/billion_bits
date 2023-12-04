@@ -28,6 +28,8 @@ class base63 {
     base63 get_modulo(const base63& arg);
     void difference(const base63& arg);
     void sum(const base63& arg);
+    void raise_to(uint64_t power);
+
 
     void print_base10(); 
     void print_bits(bool sep = false);

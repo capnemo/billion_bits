@@ -138,5 +138,20 @@ bool_vec util::convert_to_bits(unsigned char digit)
     return num; 
 }
 
+/*
+ * Returns the number of trailing zeros in the number
+ */
+ 
+uint8_t util::get_trailing_zeros(uint64_t num)
+{
+    uint64_t mask = 1ULL;
+    uint8_t zeros = 0;
+    while ((mask & num) == 0) {
+        zeros++;
+        mask = mask << 1;
+    }
+    
+    return zeros;
+}
 template void util::add<bool>(bool_vec&, const bool_vec&, int);
 template void util::add<int>(vec_int&, const vec_int&, int);
