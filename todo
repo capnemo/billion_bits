@@ -1,0 +1,2 @@
+Need a perf. comparision between operator_drv -p and bc.
+Right now, it is a factor of 10^4 in favor of bc.

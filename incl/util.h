@@ -20,6 +20,9 @@ namespace util
     void power_of_2(uint32_t exponent, vec_int& pow);
     bool is_valid_num(const std::string& num);
     uint8_t get_trailing_zeros(uint64_t);
+
+    template <typename T>
+    void raise_to(T& num, uint64_t exponent);
 }
 
 #endif

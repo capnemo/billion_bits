@@ -70,7 +70,7 @@ class base2 {
     int get_num_ones() const;
     void set_sign(bool sign);
 
-    std::vector<bool> bit_rep;
+    std::vector<bool> bit_rep = {1};
     bool is_negative = false;
 };
 #endif

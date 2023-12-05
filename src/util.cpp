@@ -2,6 +2,8 @@
 #include <vector>
 #include <bitset>
 #include "util.h"
+#include "base2.h"
+#include "base63.h"
 
 /*
  * Template function to add using different bases. Used for base 2 and
@@ -153,5 +155,37 @@ uint8_t util::get_trailing_zeros(uint64_t num)
     
     return zeros;
 }
+
+template <typename T>
+void util::raise_to(T& num, uint64_t exponent)
+{
+    uint64_t mask = 1ULL << 63;
+    uint8_t pos = 63;
+    while ((mask & exponent) == 0) {
+        pos--;
+        mask = mask >> 1;
+    }
+
+    std::vector<T> powers;
+    powers.push_back(num); 
+    for (int i = 1; i <= pos; i++) {
+        T n = powers[i - 1];
+        T m = n;
+        m.multiply_with(n);
+        powers.push_back(m);
+    }
+
+    std::bitset<64> bits = exponent;
+    T pow;
+    for (int i = 0; i <= pos; i++) {
+        if (bits[i] == true)
+            pow.multiply_with(powers[i]);
+    }
+    
+    num = pow;   
+}
+
 template void util::add<bool>(bool_vec&, const bool_vec&, int);
 template void util::add<int>(vec_int&, const vec_int&, int);
+template void util::raise_to<base2>(base2& num, uint64_t exponent);
+template void util::raise_to<base63>(base63& num, uint64_t exponent);

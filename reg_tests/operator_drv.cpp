@@ -32,7 +32,42 @@ int main(int argc, char *argv[])
         return -1;
     }
 
+    
     char func = arg_vec[2][1];
+    if (func == 'p') {
+        if (arg_vec[1] == "-b63") {
+            base63 b1 = base63::convert_to_b63(arg_vec[3]);
+            util::raise_to(b1, std::strtoull(argv[4], nullptr, 10));
+            b1.print_base10();
+/*
+            b1.raise_to(std::strtoull(argv[4], nullptr, 10));
+            b1.print_base10();
+*/
+        } else {
+            base2 b1(arg_vec[3], is_less_than_zero(arg_vec[3]));
+            util::raise_to(b1, std::strtoull(argv[4], nullptr, 10));
+            b1.print_base10();
+/*
+            b1.raise_to(std::strtoull(argv[4], nullptr, 10));
+            b1.print_base10();
+*/
+        }
+        return 0;
+    }
+
+    if (func == 'x') {
+        if (arg_vec[1] == "-b63") {
+            base63 b1 = base63::convert_to_b63(arg_vec[3]);
+            b1.raise_to(std::strtoull(argv[4], nullptr, 10));
+            b1.print_base10();
+        } else {
+            base2 b1(arg_vec[3], is_less_than_zero(arg_vec[3]));
+            b1.raise_to(std::strtoull(argv[4], nullptr, 10));
+            b1.print_base10();
+        }
+        return 0;
+    }
+
     if (arg_vec[1] == "-b63") {
         base63 b1 = base63::convert_to_b63(arg_vec[3]);
         base63 b2 = base63::convert_to_b63(arg_vec[4]);
@@ -41,7 +76,7 @@ int main(int argc, char *argv[])
             std::cout << "error -- args 3" << std::endl;
             return -1;
         }
-    } else { //Change to be more like b63
+    } else { 
         base2 b1(arg_vec[3], is_less_than_zero(arg_vec[3]));
         base2 b2(arg_vec[4], is_less_than_zero(arg_vec[4]));
         if (execute_operator(func, b1, b2) == false) {
@@ -109,7 +144,7 @@ bool is_less_than_zero(std::string& num)
 void print_usage(const std::string& prog_name)
 {
     std::cout << "Usage: ";
-    std::cout << prog_name << " -b2|-b63 " << "-a|-s|-m|-d|-r";
+    std::cout << prog_name << " -b2|-b63 " << "-a|-s|-m|-d|-r|-p";
     std::cout << " <operand 1> <operand 2>" << std::endl;
     std::cout << "The operands are in base 10" << std::endl;
 }

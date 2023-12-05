@@ -18,6 +18,7 @@ class base63 {
     static base63 convert_to_b63(const base2& b2_num);
     static base63 convert_to_base63(const vec_int& exponents);
 
+    base63() {}
     base63(b63_vec bits, bool sign = false):dig_vec(bits),
                                             is_negative(sign) {}
 
@@ -48,8 +49,8 @@ class base63 {
     void check_for_zero();
 
     private:
-    b63_vec dig_vec;
-    bool is_negative;
+    b63_vec dig_vec = {1};
+    bool is_negative = false;
 };
 
 #endif /* BASE63_H */

@@ -288,15 +288,10 @@ void base2::multiply_with_ten()
 /*
  * Raise *this to the power of 'power'
  */
-void base2::raise_to(uint64_t power)
+void base2::raise_to(uint64_t exponent)
 {
     base2 pnum = *this;
-
-    uint8_t tz = util::get_trailing_zeros(power);
-    shift_left(tz);
-
-    uint64_t odd = power/(1 << tz);
-    for (int i = 0; i < odd - 1; i++)
+    for (int i = 0; i < exponent - 1; i++)
         multiply_with(pnum);
 }
 
