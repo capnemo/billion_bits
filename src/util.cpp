@@ -92,6 +92,9 @@ vec_int util::convert_to_base10(const bool_vec& bin_num)
             util::add(res, powers_of_2[(sz -1) - i], 10);
     }
 
+    if (res.size() == 0)
+        res.push_back(0);
+
     return res;
 }
 #if 0
