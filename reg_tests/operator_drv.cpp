@@ -38,7 +38,8 @@ int main(int argc, char *argv[])
         if (arg_vec[1] == "-b63") {
             base63 b1 = base63::convert_to_b63(arg_vec[3]);
             util::raise_to(b1, std::strtoull(argv[4], nullptr, 10));
-            b1.print_base10();
+            std::cout << "----------" << std::endl;
+            //b1.print_base10();
 /*
             b1.raise_to(std::strtoull(argv[4], nullptr, 10));
             b1.print_base10();
@@ -46,7 +47,8 @@ int main(int argc, char *argv[])
         } else {
             base2 b1(arg_vec[3], is_less_than_zero(arg_vec[3]));
             util::raise_to(b1, std::strtoull(argv[4], nullptr, 10));
-            b1.print_base10();
+            std::cout << "----------" << std::endl;
+            //b1.print_base10();
 /*
             b1.raise_to(std::strtoull(argv[4], nullptr, 10));
             b1.print_base10();

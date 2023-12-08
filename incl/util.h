@@ -15,6 +15,7 @@ namespace util
 
     vec_int convert_to_base10(const char* num_str);
     vec_int convert_to_base10(unsigned long num);
+    void multiply_with_2_base10(const vec_int& num, vec_int& out);
     vec_int convert_to_base10(const bool_vec& bin_num);
     bool_vec convert_to_bits(unsigned char digit);
     void power_of_2(uint32_t exponent, vec_int& pow);

@@ -26,8 +26,8 @@ void util::add(std::vector<T>& n1, const std::vector<T>& n2, int base)
 
     while (n1_pos >= 0) {
         int t = n1[n1_pos] + carry;
-        n1[n1_pos--] = t%2;
-        carry = t/2;
+        n1[n1_pos--] = t%base;
+        carry = t/base;
     }
 
     if (carry != 0)
@@ -62,6 +62,39 @@ vec_int util::convert_to_base10(unsigned long num)
     return b10;
 }
 
+void util::multiply_with_2_base10(const vec_int& num, vec_int& out)
+{
+    out.clear();
+    int carry = 0;
+    for (int i = num.size() - 1; i >= 0; i--) {
+        int t = 2*num[i] + carry;
+        out.insert(out.begin(), t%10);
+        carry = t/10;
+    }
+    if (carry != 0) 
+        out.insert(out.begin(), carry);
+}
+
+vec_int util::convert_to_base10(const bool_vec& bin_num)
+{
+    int sz = bin_num.size();
+    std::vector<vec_int> powers_of_2 = {{1}};
+
+    for (int i = 1; i < sz; i++) {
+        vec_int p;
+        multiply_with_2_base10(powers_of_2[i - 1], p);
+        powers_of_2.push_back(p);
+    }
+    
+    vec_int res;
+    for (int i = 0; i < bin_num.size(); i++) {
+        if (bin_num[i] == 1) 
+            util::add(res, powers_of_2[(sz -1) - i], 10);
+    }
+
+    return res;
+}
+#if 0
 /*
  * converts binary to base 10
  */
@@ -109,7 +142,7 @@ void util::power_of_2(uint32_t exponent, vec_int& pow)
         tmp.clear();
     }
 }
-
+#endif
 /*
  * Returns if num is a valid base 10 number.
  */
