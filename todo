@@ -1,2 +1,9 @@
 Need a perf. comparision between operator_drv -p and bc.
 Right now, it is a factor of 10^4 in favor of bc.
+The above is probably because of the translation from b63 to b10
+For really b63 to be marginally faster, we will have to use all the the bits
+of the 64 bit register. Right now, b63 does not use the MS bit to leave room 
+for overflow during addition. 
+
+A better implementation would all 64 bits and use assembly or a builtin to 
+check the overflow flag.
